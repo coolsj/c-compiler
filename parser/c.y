@@ -289,16 +289,16 @@ assignment_expression
 																		switch($2)
 																		{
 																			case assign_op_t::add_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::add_op, $1, $3);
+																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::add_op, $1->Clone(), $3);
 																				break;
 																			case assign_op_t::subtract_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::subtract_op, $1, $3);
+																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::subtract_op, $1->Clone(), $3);
 																				break;
 																			case assign_op_t::multiply_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::multiply_op, $1, $3);
+																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::multiply_op, $1->Clone(), $3);
 																				break;
 																			case assign_op_t::divide_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::divide_op, $1, $3);
+																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::divide_op, $1->Clone(), $3);
 																				break;
 																		}
 																		$$ = new ASTAssignmentOperationExpression($1, p_rhs);

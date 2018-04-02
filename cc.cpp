@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	{
 		//p_root->PrintNode();
 		CodeGen(p_root);
-		//delete p_root;
+		delete p_root;
 	}
 	//printf("retv = %d\n", ret);
 	exit(0);

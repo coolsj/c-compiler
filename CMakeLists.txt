@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.9)
 
 # General settings
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "-std=c++11 -std=gnu++11")
+set(CMAKE_CXX_FLAGS " -g -std=c++11 -std=gnu++11")
 
 set(PARSER_DIR ${CMAKE_SOURCE_DIR}/parser)
 set(SYNTAX_TREE_DIR ${CMAKE_SOURCE_DIR}/syntax_tree)
