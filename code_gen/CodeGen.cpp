@@ -192,9 +192,11 @@ LLVMValueRef CodeGen( ASTFuncDeclarationStatement* p_func_decl_stmt, LLVMModuleR
         LLVMDeleteFunction(func);
         return NULL;
     }
-	CodeGenContext::PopBlock();
 	// Add default return
+	if( LLVMGetTypeKind(LLVMGetReturnType(func_type)) == LLVMVoidTypeKind )
+		LLVMBuildRetVoid(builder);
 	//LLVMBuildRet( builder, body );
+	CodeGenContext::PopBlock();
     // Verify function.
     if(LLVMVerifyFunction(func, LLVMPrintMessageAction) == 1) {
         fprintf(stderr, "Invalid function");
@@ -446,10 +448,10 @@ LLVMValueRef CodeGen( ASTFunctionCallExpression* p_func_call_expr, LLVMModuleRef
 		{
 			params[i++] = CodeGen(*iter, module, builder);
 		}
-		return LLVMBuildCall(builder, func_val, params, num_args, func_name.c_str());
+		return LLVMBuildCall(builder, func_val, params, num_args, "");
 	}
 	else
 	{
-		return LLVMBuildCall(builder, func_val, nullptr, 0, func_name.c_str());
+		return LLVMBuildCall(builder, func_val, nullptr, 0, "");
 	}
 }
