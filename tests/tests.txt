@@ -1,0 +1,6 @@
+special_sum.c
+hello_world.c
+factorial.c
+arithmetic.c
+print_sum.c
+pascal_triangle.c

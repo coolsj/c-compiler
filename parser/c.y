@@ -106,8 +106,8 @@ primary_expression
 							}
 	| constant				{ $$ = $1; }
 	| string				{ $$ = $1; }
-/*	| '(' expression ')'
-	| generic_selection */
+	| '(' expression ')'	{ $$ = $2; }
+/*	| generic_selection */
 	;
 
 constant

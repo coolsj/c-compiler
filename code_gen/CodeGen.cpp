@@ -3,8 +3,8 @@
 
 vector<CodeGenBlock*> CodeGenContext::block_stack;
 map<string,LLVMValueRef> CodeGenContext::functions_;
-LLVMBasicBlockRef CodeGenContext::curr_loop_cond_block_;
-LLVMBasicBlockRef CodeGenContext::curr_loop_post_block_;
+stack<LLVMBasicBlockRef> CodeGenContext::loop_cond_block_stack_;
+stack<LLVMBasicBlockRef> CodeGenContext::loop_post_block_stack_;
 
 struct MatchPathSeparator
 {
@@ -307,10 +307,10 @@ LLVMValueRef CodeGen( ASTIterationStatement* p_iter_stmt, LLVMModuleRef module, 
 	// New basic blocks
 	LLVMValueRef curr_func_ref = LLVMGetBasicBlockParent(CodeGenContext::GetCurrentBlock()->GetBasicBlock());
     LLVMBasicBlockRef loop_cond_block = LLVMAppendBasicBlock(curr_func_ref, "loop_cond");
-	CodeGenContext::SetCurrentLoopCondBlock(loop_cond_block);
+	CodeGenContext::PushLoopCondBlock(loop_cond_block);
     LLVMBasicBlockRef loop_body_block = LLVMAppendBasicBlock(curr_func_ref, "loop_body");
     LLVMBasicBlockRef loop_post_block = LLVMAppendBasicBlock(curr_func_ref, "loop_post");
-	CodeGenContext::SetCurrentLoopPostBlock(loop_post_block);
+	CodeGenContext::PushLoopPostBlock(loop_post_block);
 
 	// For while and for loops, condition needs to be evaluated first
 	LLVMBuildBr(builder, loop_cond_block);
@@ -333,6 +333,8 @@ LLVMValueRef CodeGen( ASTIterationStatement* p_iter_stmt, LLVMModuleRef module, 
 	// build post block
 	CodeGenContext::PushBlock( CodeGenContext::GetNewBlock(loop_post_block) );
     LLVMPositionBuilderAtEnd(builder, loop_post_block);
+	CodeGenContext::PopLoopCondBlock();
+	CodeGenContext::PopLoopPostBlock();
 }
 
 LLVMValueRef CodeGen( ASTExpression* p_expr, LLVMModuleRef module, LLVMBuilderRef builder, bool is_lhs )

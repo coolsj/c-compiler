@@ -23,5 +23,6 @@ int main()
 {
 	int a = 100;
 	printf("Special sum of %d numbers is: %d", a, special_sum(a) );
+	puts("");
 	return 0;
 }

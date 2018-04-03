@@ -23,8 +23,12 @@ int divide(int a, int b)
 int main()
 {
 	printf("Add: %d ", add(10,20));
+	puts("");
 	printf("Subtract: %d ", subtract(10,20));
+	puts("");
 	printf("Multiply: %d ", multiply(10,20));
+	puts("");
 	printf("Divide: %d ", divide(10,20));
+	puts("");
 	return 0;
 }

@@ -1,5 +1,6 @@
 #include <map>
 #include <vector>
+#include <stack>
 #include "ASTNodes.h"
 #include <llvm-c/Core.h>
 #include <llvm-c/Analysis.h>
@@ -67,15 +68,18 @@ class CodeGenContext
 			}
 			return nullptr;
 		}
-		static void SetCurrentLoopCondBlock(LLVMBasicBlockRef loop_cond_block) { curr_loop_cond_block_ = loop_cond_block; }
-		static LLVMBasicBlockRef GetCurrentLoopCondBlock() { return curr_loop_cond_block_; }
-		static void SetCurrentLoopPostBlock(LLVMBasicBlockRef loop_post_block) { curr_loop_post_block_ = loop_post_block; }
-		static LLVMBasicBlockRef GetCurrentLoopPostBlock() { return curr_loop_post_block_; }
+		static void PushLoopCondBlock(LLVMBasicBlockRef loop_cond_block) { loop_cond_block_stack_.push(loop_cond_block); }
+		static void PopLoopCondBlock() { loop_cond_block_stack_.pop(); }
+		static LLVMBasicBlockRef GetCurrentLoopCondBlock() { return loop_cond_block_stack_.top(); }
+
+		static void PushLoopPostBlock(LLVMBasicBlockRef loop_post_block) { loop_post_block_stack_.push(loop_post_block); }
+		static void PopLoopPostBlock() { loop_post_block_stack_.pop(); }
+		static LLVMBasicBlockRef GetCurrentLoopPostBlock() { return loop_post_block_stack_.top(); }
 	private:
 		static vector<CodeGenBlock*> block_stack;
 		static map<string,LLVMValueRef> functions_;
-		static LLVMBasicBlockRef curr_loop_cond_block_;
-		static LLVMBasicBlockRef curr_loop_post_block_;
+		static stack<LLVMBasicBlockRef> loop_cond_block_stack_;
+		static stack<LLVMBasicBlockRef> loop_post_block_stack_;
 };
 
 LLVMTypeRef GetLLVMType( value_type_t type );

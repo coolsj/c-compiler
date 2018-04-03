@@ -25,7 +25,9 @@ int main()
 {
 	int a=5;
 	printf("Factorial of %d is %d ", a, fact_recurse(a));
+	puts("");
 	int b = a+1;
 	printf("Factorial of %d is %d ", b, fact_iterate(b));
+	puts("");
 	return 0;
 }
