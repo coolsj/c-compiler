@@ -8,6 +8,7 @@ set(PARSER_DIR ${CMAKE_SOURCE_DIR}/parser)
 set(SYNTAX_TREE_DIR ${CMAKE_SOURCE_DIR}/syntax_tree)
 set(UTILS_DIR ${CMAKE_SOURCE_DIR}/utils)
 set(CODEGEN_DIR ${CMAKE_SOURCE_DIR}/code_gen)
+set(OPTIMIZATION_DIR ${CMAKE_SOURCE_DIR}/optimization)
 
 # Flex and Bison
 find_package(BISON 3.0)
@@ -50,6 +51,7 @@ message(STATUS "LLVM_LIBS : ${llvm_libs}")
 file(GLOB SYNTAX_TREE_SOURCES "${SYNTAX_TREE_DIR}/*.cpp")
 file(GLOB UTILS_SOURCES "${UTILS_DIR}/*.cpp") 
 file(GLOB CODEGEN_SOURCES "${CODEGEN_DIR}/*.cpp") 
+file(GLOB OPTIMIZATION_SOURCES "${OPTIMIZATION_DIR}/*.cpp") 
 
 # Includes
 include_directories(
@@ -57,6 +59,7 @@ include_directories(
 					${UTILS_DIR}
 					${PARSER_DIR}
 					${CODEGEN_DIR}
+					${OPTIMIZATION_DIR}
 					${LLVM_INCLUDE_DIRS}
 					/usr/include/llvm-c-3.4
 					/usr/include/llvm-3.4
@@ -71,6 +74,7 @@ add_executable(
 				${SYNTAX_TREE_SOURCES}
 				${UTILS_SOURCES}
 				${CODEGEN_SOURCES}
+				${OPTIMIZATION_SOURCES}
 			)
 
 # Link executable to LLVM static libraries

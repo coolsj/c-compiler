@@ -416,6 +416,7 @@ class ASTConstantExpression : public ASTExpression
 		ASTConstantExpression(ASTConstantExpression & that);
 
 		value_type_t GetType() { return type_; }
+		void SetValue(string value) { value_ = value; }
 		string GetValue() { return value_; }
 
 		void PrintNode();

@@ -6,6 +6,8 @@ map<string,LLVMValueRef> CodeGenContext::functions_;
 stack<LLVMBasicBlockRef> CodeGenContext::loop_cond_block_stack_;
 stack<LLVMBasicBlockRef> CodeGenContext::loop_post_block_stack_;
 
+extern bool optimize;
+
 struct MatchPathSeparator
 {
     bool operator()( char ch ) const
@@ -19,7 +21,10 @@ string GetModuleName( string const& pathname )
     string filename = string( std::find_if( pathname.rbegin(), pathname.rend(), MatchPathSeparator() ).base(), pathname.end() );
 	auto pivot = std::find( filename.rbegin(), filename.rend(), '.' );
     string filebasename = (pivot == filename.rend()) ? filename : string( filename.begin(), pivot.base() - 1 );
-	return "sj_"+filebasename;
+	if(optimize)
+		return "sj_optimized_"+filebasename;
+	else
+		return "sj_"+filebasename;
 }
 
 LLVMTypeRef GetLLVMType( value_type_t type )
@@ -375,6 +380,12 @@ LLVMValueRef CodeGen( ASTBinaryOperationExpression* p_bin_op_expr, LLVMModuleRef
 			return LLVMBuildMul( builder, left, right, "mul_temp" );
 		case binary_op_t::divide_op:
 			return LLVMBuildSDiv( builder, left, right, "div_temp" );
+		case binary_op_t::modulus_op:
+			return LLVMBuildSRem( builder, left, right, "mod_temp" );
+		case binary_op_t::right_shift_op:
+			return LLVMBuildAShr( builder, left, right, "rshift_temp" );
+		case binary_op_t::left_shift_op:
+			return LLVMBuildShl( builder, left, right, "lshift_temp" );
 		case binary_op_t::compare_gt_op:
 			return LLVMBuildICmp( builder, LLVMIntSGT, left, right, "cmp_sgt_temp" );
 		case binary_op_t::compare_ge_op:

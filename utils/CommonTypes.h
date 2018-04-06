@@ -32,6 +32,8 @@ enum class binary_op_t
 	multiply_op,
 	divide_op,
 	modulus_op,
+	right_shift_op,
+	left_shift_op,
 	logical_and_op,
 	logical_or_op,
 	compare_gt_op,

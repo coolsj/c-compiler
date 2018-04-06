@@ -23,6 +23,7 @@ static shared_ptr<SymbolTable> p_curr_symbol_table;
 %code requires {
 #include "ASTNodes.h"
 #include "non_terminal_types.h"
+#include "Optimize.h"
 }
 
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
@@ -221,21 +222,21 @@ cast_expression
 
 multiplicative_expression
 	: cast_expression									{ $$ = $1; }
-	| multiplicative_expression '*' cast_expression		{ $$ = new ASTBinaryOperationExpression(binary_op_t::multiply_op, $1, $3); }
-	| multiplicative_expression '/' cast_expression		{ $$ = new ASTBinaryOperationExpression(binary_op_t::divide_op, $1, $3); }
-	| multiplicative_expression '%' cast_expression		{ $$ = new ASTBinaryOperationExpression(binary_op_t::modulus_op, $1, $3); }
+	| multiplicative_expression '*' cast_expression		{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::multiply_op); }
+	| multiplicative_expression '/' cast_expression		{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::divide_op); }
+	| multiplicative_expression '%' cast_expression		{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::modulus_op); }
 	;
 
 additive_expression
 	: multiplicative_expression							{ $$ = $1; }
-	| additive_expression '+' multiplicative_expression	{ $$ = new ASTBinaryOperationExpression(binary_op_t::add_op, $1, $3); }
-	| additive_expression '-' multiplicative_expression	{ $$ = new ASTBinaryOperationExpression(binary_op_t::subtract_op, $1, $3); }
+	| additive_expression '+' multiplicative_expression	{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::add_op); }
+	| additive_expression '-' multiplicative_expression	{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::subtract_op); }
 	;
 
 shift_expression
-	: additive_expression
-/*	| shift_expression LEFT_OP additive_expression
-	| shift_expression RIGHT_OP additive_expression */
+	: additive_expression								{ $$ = $1; }
+	| shift_expression LEFT_OP additive_expression		{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::right_shift_op); }
+	| shift_expression RIGHT_OP additive_expression		{ $$ = OptimizeArithmeticExpr($1, $3, binary_op_t::left_shift_op); }
 	;
 
 relational_expression
@@ -289,16 +290,16 @@ assignment_expression
 																		switch($2)
 																		{
 																			case assign_op_t::add_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::add_op, $1->Clone(), $3);
+																				p_rhs = OptimizeArithmeticExpr($1->Clone(), $3, binary_op_t::add_op);
 																				break;
 																			case assign_op_t::subtract_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::subtract_op, $1->Clone(), $3);
+																				p_rhs = OptimizeArithmeticExpr($1->Clone(), $3, binary_op_t::subtract_op);
 																				break;
 																			case assign_op_t::multiply_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::multiply_op, $1->Clone(), $3);
+																				p_rhs = OptimizeArithmeticExpr($1->Clone(), $3, binary_op_t::multiply_op);
 																				break;
 																			case assign_op_t::divide_assign_op:
-																				p_rhs = new ASTBinaryOperationExpression(binary_op_t::divide_op, $1->Clone(), $3);
+																				p_rhs = OptimizeArithmeticExpr($1->Clone(), $3, binary_op_t::divide_op);
 																				break;
 																		}
 																		$$ = new ASTAssignmentOperationExpression($1, p_rhs);

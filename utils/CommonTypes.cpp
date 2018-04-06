@@ -8,6 +8,9 @@ string binary_op_to_string( binary_op_t op )
 		case binary_op_t::subtract_op:				return "-";
 		case binary_op_t::multiply_op:				return "*";
 		case binary_op_t::divide_op:				return "/";
+		case binary_op_t::modulus_op:				return "%";
+		case binary_op_t::right_shift_op:			return ">>";
+		case binary_op_t::left_shift_op:			return "<<";
 		case binary_op_t::logical_and_op:			return "&&";
 		case binary_op_t::logical_or_op:			return "||";
 		case binary_op_t::compare_gt_op:			return ">";
